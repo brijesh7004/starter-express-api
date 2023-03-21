@@ -9,7 +9,6 @@ const studentRouter = require('./api/Router/student_gec');
 const studentRouter2 = require('./api/Router/student_other');
 const bodyparser = require('body-parser');
 
-//mongodb+srv://kanudo3101:ManP0ddUNiCRK1X2@mongodbpractice.g1mvyof.mongodb.net/?retryWrites=true&w=majority
 mongoose.connect("mongodb+srv://kanudo3101:ManP0ddUNiCRK1X2@mongodbpractice.g1mvyof.mongodb.net/placement_data");
 mongoose.connection.on('error', (err)=> {console.log("Connection Failed : $err");})
 mongoose.connection.on('connected', (connected)=> {console.log("Connected with database ....");})
