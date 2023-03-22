@@ -48,48 +48,11 @@ router.get("/:id",(req, res, next) => {
 
 
 
-router.post("/",(req, res, next) => {  
-    const notifyItem = new companySchema({
-        _id: new mongoose.Types.ObjectId,
-        name: req.body.name,
-        address: req.body.address,
-        website: req.body.website,
-        package: req.body.package,
-        pkgMin: req.body.pkgMin,
-        pkgMax: req.body.pkgMax,
-        campusdate: req.body.campusdate,
-        grade10: req.body.grade10,
-        grade12: req.body.grade12,
-        graded2d: req.body.graded2d,
-        cpi: req.body.cpi,
-        cgpa: req.body.cgpa,
-        backlog: req.body.backlog,
-        created_at: moment().format('YYYY-MM-DD hh:mm:ss'),
-        modified_at: moment().format('YYYY-MM-DD hh:mm:ss'),
-    });
-
-    notifyItem.save()
-    .then((result) => {
-        // console.log(result);
-        res.status(200).json({
-            response: result,
-            status: 200
-        })
-    })
-    .catch((err) => {
-        // console.log(err);
-        res.status(500).json({
-            error: err,
-            status: 500
-        })
-    });
-});
-
-router.put("/update/:id",(req, res, next) => {
-    // console.log(req.body);
-
-    companySchema.findOneAndUpdate({_id:req.params.id,},{
-        $set:{
+router.post("/",(req, res, next) => { 
+    
+    if((req.body.key ?? '000') == 'gec-placement-2023'){
+        const notifyItem = new companySchema({
+            _id: new mongoose.Types.ObjectId,
             name: req.body.name,
             address: req.body.address,
             website: req.body.website,
@@ -103,23 +66,77 @@ router.put("/update/:id",(req, res, next) => {
             cpi: req.body.cpi,
             cgpa: req.body.cgpa,
             backlog: req.body.backlog,
+            created_at: moment().format('YYYY-MM-DD hh:mm:ss'),
             modified_at: moment().format('YYYY-MM-DD hh:mm:ss'),
-        }
-    })
-    .then((result) => {
-        // console.log(result);
-        res.status(200).json({
-            response: result,
-            status: 200
+        });
+    
+        notifyItem.save()
+        .then((result) => {
+            // console.log(result);
+            res.status(200).json({
+                response: result,
+                status: 200
+            })
         })
-    })
-    .catch((err) => {
-        // console.log(err);
+        .catch((err) => {
+            // console.log(err);
+            res.status(500).json({
+                error: err,
+                status: 500
+            })
+        });
+    }
+    else{
         res.status(500).json({
-            error: err,
+            error: 'Failed to Add Company',
             status: 500
         })
-    });
+    }
+});
+
+router.put("/update/:id",(req, res, next) => {
+    // console.log(req.body);
+
+    if((req.body.key ?? '000') == 'gec-placement-2023'){
+        companySchema.findOneAndUpdate({_id:req.params.id,},{
+            $set:{
+                name: req.body.name,
+                address: req.body.address,
+                website: req.body.website,
+                package: req.body.package,
+                pkgMin: req.body.pkgMin,
+                pkgMax: req.body.pkgMax,
+                campusdate: req.body.campusdate,
+                grade10: req.body.grade10,
+                grade12: req.body.grade12,
+                graded2d: req.body.graded2d,
+                cpi: req.body.cpi,
+                cgpa: req.body.cgpa,
+                backlog: req.body.backlog,
+                modified_at: moment().format('YYYY-MM-DD hh:mm:ss'),
+            }
+        })
+        .then((result) => {
+            // console.log(result);
+            res.status(200).json({
+                response: result,
+                status: 200
+            })
+        })
+        .catch((err) => {
+            // console.log(err);
+            res.status(500).json({
+                error: err,
+                status: 500
+            })
+        });
+    }
+    else{
+        res.status(500).json({
+            error: 'Failed to Update Company',
+            status: 500
+        })
+    }
 });
 router.put("/clearid",(req, res, next) => {
     // console.log("Clear Item");
