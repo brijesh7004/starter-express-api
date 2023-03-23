@@ -4,6 +4,7 @@ const notifySchema = new mongoose.Schema({
     id:String,
     title:String,
     body:String,
+    image:String,
     created_at:String,
 });
 

@@ -65,6 +65,7 @@ router.post("/",(req, res, next) => {
             _id: new mongoose.Types.ObjectId,
             title: req.body.title,
             body: req.body.body,
+            image: req.body.image,
             created_at: moment().format('YYYY-MM-DD hh:mm:ss'),
         });    
     
@@ -100,6 +101,8 @@ router.put("/update/:id",(req, res, next) => {
             $set:{
                 title: req.body.title,
                 body: req.body.body,
+                image: req.body.image,
+                created_at: moment().format('YYYY-MM-DD hh:mm:ss'),
             }
         })
         .then((result) => {
