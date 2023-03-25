@@ -85,6 +85,7 @@ router.get("/IsStudentExist/:enrollmentno",(req, res, next) => {
         // console.log(result);
         res.status(200).json({            
             response: result.length==1?result[0]._id:0,
+            student: result.length==1?result[0]:null,
             status: 200
         })
     })
