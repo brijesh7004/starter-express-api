@@ -9,7 +9,7 @@ router.get("/",(req, res, next) => {
     //body  => { "offset":0, "limit":10 }
 
     // companySchema.find({id:{$exists:true}}).sort({created_at:-1})
-    companySchema.find().sort({created:-1})
+    companySchema.find().sort({created_at:-1})
     .skip(req.query.offset??0).limit(req.query.limit??100)
     .then((result) => {
         // console.log(result);
