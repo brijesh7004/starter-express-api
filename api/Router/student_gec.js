@@ -38,6 +38,7 @@ router.get("/",(req, res, next) => {
     if(req.body.isplacement != null){ filterJson.isplacement = req.body.isplacement; }
     if(req.body.iscampusinterest != null){ filterJson.iscampusinterest = req.body.iscampusinterest; }
     if(req.body.isPlacedInFare != null){ filterJson.isPlacedInFare = req.body.isPlacedInFare; }
+    if(req.body.placementYear != null){ filterJson.placementYear = req.body.placementYear; }
 
     // console.log(filterJson);
 
