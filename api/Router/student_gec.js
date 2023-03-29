@@ -100,6 +100,56 @@ router.get("/IsStudentExist/:enrollmentno",(req, res, next) => {
 });
 
 
+router.post("/FilterStudent",(req, res, next) => {  
+    filterJson = {}
+    if(req.body.name != null){ filterJson = { $text: { $search: req.body.name } }; }
+    
+    if(req.body.enrollmentno != null){ filterJson.enrollmentno = req.body.enrollmentno; }
+    if(req.body.branch != null){ filterJson.branch = req.body.branch; }
+    if(req.body.branchcode != null){ filterJson.branchcode = req.body.branchcode; }
+    if(req.body.academicyear != null){ filterJson.academicyear = req.body.academicyear; }
+    
+    if(req.body.email != null){ filterJson.email = req.body.email; }
+    if(req.body.mobile != null){ filterJson.mobile = req.body.mobile; }
+    if(req.body.gender != null){ filterJson.gender = req.body.gender; }
+    if(req.body.category != null){ filterJson.category = req.body.category; }
+
+    if(req.body.grade10 != null){ filterJson.grade10 = { $gte: req.body.grade10}; }
+    if(req.body.grade12 != null){ filterJson.grade12 = { $gte: req.body.grade12}; }
+    if(req.body.graded2d != null){ filterJson.graded2d = { $gte: req.body.graded2d}; }
+    if(req.body.isdiploma != null){ filterJson.isdiploma = req.body.isdiploma; }
+    
+    if(req.body.totalbacklog != null){ filterJson.totalbacklog = { $gte: req.body.totalbacklog}; }
+    if(req.body.finalcpi != null){ filterJson.finalcpi = { $gte: req.body.finalcpi}; }
+    if(req.body.finalcgpa != null){ filterJson.finalcgpa = { $gte: req.body.finalcgpa}; }
+
+    if(req.body.sem5cgpa != null){ filterJson.sem5cgpa = { $gte: req.body.sem5cgpa}; }
+    if(req.body.sem6cgpa != null){ filterJson.sem6cgpa = { $gte: req.body.sem6cgpa}; }
+    if(req.body.sem7cgpa != null){ filterJson.sem7cgpa = { $gte: req.body.sem7cgpa}; }
+    if(req.body.sem8cgpa != null){ filterJson.sem8cgpa = { $gte: req.body.sem8cgpa}; }
+    
+    if(req.body.isplacement != null){ filterJson.isplacement = req.body.isplacement; }
+    if(req.body.iscampusinterest != null){ filterJson.iscampusinterest = req.body.iscampusinterest; }
+    if(req.body.isPlacedInFare != null){ filterJson.isPlacedInFare = req.body.isPlacedInFare; }
+    if(req.body.placementYear != null){ filterJson.placementYear = req.body.placementYear; }
+
+    studentSchema.find(filterJson)//.sort({enrollmentno:-1})
+    .skip(req.body.offset??0).limit(req.body.limit??100)
+    .then((result) => {
+        // console.log(result);
+        res.status(200).json({
+            response: result,
+            status: 200
+        })
+    })
+    .catch((err) => {
+        // console.log(err);
+        res.status(500).json({
+            error: err,
+            status: 500
+        })
+    });
+});
 
 router.post("/",(req, res, next) => {  
     const notifyItem = new studentSchema({
