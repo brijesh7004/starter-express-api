@@ -133,7 +133,7 @@ router.post("/FilterStudent",(req, res, next) => {
     if(req.body.isPlacedInFare != null){ filterJson.isPlacedInFare = req.body.isPlacedInFare; }
     if(req.body.placementYear != null){ filterJson.placementYear = req.body.placementYear; }
 
-    studentSchema.find(filterJson)//.sort({enrollmentno:-1})
+    studentSchema2.find(filterJson)//.sort({enrollmentno:-1})
     .skip(req.body.offset??0).limit(req.body.limit??100)
     .then((result) => {
         // console.log(result);
@@ -245,9 +245,9 @@ router.put("/update/:id",(req, res, next) => {
         $set:{
             name: req.body.name,
             accesstoken: req.body.accesstoken,
-            // branch: req.body.branch,
-            // branchcode: req.body.branchcode,
-            // academicyear: req.body.academicyear,
+            branch: req.body.branch,
+            branchcode: req.body.branchcode,
+            academicyear: req.body.academicyear,
             email: req.body.email,
             mobile: req.body.mobile,
             birthdate: req.body.birthdate,
