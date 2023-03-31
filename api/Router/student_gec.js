@@ -43,7 +43,7 @@ router.get("/",(req, res, next) => {
     // console.log(filterJson);
 
     // studentSchema.find({id:{$exists:true}}).sort({created_at:-1})
-    studentSchema.find(filterJson)//.sort({enrollmentno:-1})
+    studentSchema.find(filterJson).sort({enrollmentno:1})
     .skip(req.body.offset??0).limit(req.body.limit??100)
     .then((result) => {
         // console.log(result);
@@ -81,6 +81,7 @@ router.get("/:id",(req, res, next) => {
 });
 router.get("/IsStudentExist/:enrollmentno",(req, res, next) => {
     // studentSchema.find({"title":req.params.title})
+    // console.log(req.params.enrollmentno);
     studentSchema.find({enrollmentno: req.params.enrollmentno})
     .then((result) => {
         // console.log(result);
@@ -92,6 +93,36 @@ router.get("/IsStudentExist/:enrollmentno",(req, res, next) => {
     })
     .catch((err) => {
         // console.log(err);
+        res.status(500).json({
+            error: err,
+            status: 500
+        })
+    });
+});
+router.get("/StudentLogin/:enrollmentno/:password",(req, res, next) => {
+    // studentSchema.find({"title":req.params.title})
+    studentSchema.find({"enrollmentno": req.params.enrollmentno})
+    .then((result) => {
+        // console.log(result);
+        if(result.length==0){
+            res.status(200).json({            
+                response: false,
+                status: 200
+            })            
+        }
+        else{
+            var isSuccess = ((result[0].accesstoken ?? "") == req.params.password) ||      
+                        (((result[0].accesstoken ?? "") == "") && (req.params.enrollmentno == req.params.password));
+
+            res.status(200).json({            
+                response: isSuccess,
+                student: isSuccess?result[0]:null,
+                status: 200
+            })
+        }       
+    })
+    .catch((err) => {
+        console.log(err);
         res.status(500).json({
             error: err,
             status: 500
@@ -133,7 +164,7 @@ router.post("/FilterStudent",(req, res, next) => {
     if(req.body.isPlacedInFare != null){ filterJson.isPlacedInFare = req.body.isPlacedInFare; }
     if(req.body.placementYear != null){ filterJson.placementYear = req.body.placementYear; }
 
-    studentSchema.find(filterJson)//.sort({enrollmentno:-1})
+    studentSchema.find(filterJson).sort({enrollmentno:1})
     .skip(req.body.offset??0).limit(req.body.limit??100)
     .then((result) => {
         // console.log(result);
