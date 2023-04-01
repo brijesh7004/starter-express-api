@@ -17,6 +17,13 @@ const companySchema = new mongoose.Schema({
     backlog:Number,
     created_at:String,
     modified_at:String,
+
+    branchEC: Boolean,
+    branchIT: Boolean,
+    branchCE: Boolean,
+    branchCivil: Boolean,
+    branchMech: Boolean,
+    branchProd: Boolean,
 });
 
 module.exports = mongoose.model('companySchema', companySchema, 'company_data');

@@ -68,6 +68,13 @@ router.post("/",(req, res, next) => {
             backlog: req.body.backlog,
             created_at: moment().format('YYYY-MM-DD hh:mm:ss'),
             modified_at: moment().format('YYYY-MM-DD hh:mm:ss'),
+
+            branchEC: req.body.branchEC,
+            branchIT: req.body.branchIT,
+            branchCE: req.body.branchCE,
+            branchCivil: req.body.branchCivil,
+            branchMech: req.body.branchMech,
+            branchProd: req.body.branchProd,
         });
     
         notifyItem.save()
@@ -114,6 +121,13 @@ router.put("/update/:id",(req, res, next) => {
                 cgpa: req.body.cgpa,
                 backlog: req.body.backlog,
                 modified_at: moment().format('YYYY-MM-DD hh:mm:ss'),
+
+                branchEC: req.body.branchEC,
+                branchIT: req.body.branchIT,
+                branchCE: req.body.branchCE,
+                branchCivil: req.body.branchCivil,
+                branchMech: req.body.branchMech,
+                branchProd: req.body.branchProd,
             }
         })
         .then((result) => {
