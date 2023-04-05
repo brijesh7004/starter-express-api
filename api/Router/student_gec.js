@@ -429,4 +429,56 @@ router.delete("/:id",(req, res, next) => {
 });
 
 
+router.get("/GetPlacementStatistics/:year",(req, res, next) => {
+    studentSchema.find({isplacement: true}).sort({enrollmentno:1})
+    //.skip(req.body.offset??0).limit(req.body.limit??100)
+    .then((result) => {
+        // console.log(result)
+        curYear = Number(req.params.year)
+
+        index = 0
+        finalResponse = []
+
+        for(yr=curYear; yr>curYear-4; yr--){
+            result1 = result.filter(x => (Date.parse(x.placementYear + '-' + x.placementMonth.toString().padStart(2,'0') + '-01') < Date.parse(yr + '-05-31')
+                                    && Date.parse(x.placementYear + '-' + x.placementMonth.toString().padStart(2,'0') + '-01') > Date.parse(yr-1 + '-06-01'))) ?? []
+            // console.log('Result = ' + result1);
+            // console.log('Result = ' + result1.length);
+            
+            curResponse = { 'year': yr }
+
+            if(result1.length == 0){
+                curResponse.total = 0;
+                curResponse.civil = 0; curResponse.ce = 0; curResponse.ec = 0; 
+                curResponse.it = 0; curResponse.mech = 0; curResponse.prod = 0;
+                
+            }
+            else{
+                curResponse.total = result1.length
+                curResponse.civil = (result1.filter(x => x.branchcode==6) ?? []).length; 
+                curResponse.ce = (result1.filter(x => x.branchcode==7) ?? []).length; 
+                curResponse.ec = (result1.filter(x => x.branchcode==11) ?? []).length; 
+                curResponse.it = (result1.filter(x => x.branchcode==16) ?? []).length; 
+                curResponse.mech = (result1.filter(x => x.branchcode==19) ?? []).length; 
+                curResponse.prod = (result1.filter(x => x.branchcode==25) ?? []).length; 
+            }
+
+            finalResponse[index++] = curResponse
+        }
+
+        res.status(200).json({
+            response: finalResponse,
+            status: 200
+        })
+    })
+    .catch((err) => {
+        // console.log(err);
+        res.status(500).json({
+            error: err + ' -0',
+            status: 500
+        })
+    });
+});
+
+
 module.exports = router;

@@ -192,4 +192,55 @@ router.delete("/:id",(req, res, next) => {
     });
 });
 
+
+router.get("/GetCompanyStatistics/:year",(req, res, next) => {
+    companySchema.find()//.sort({enrollmentno:1})
+    //.skip(req.body.offset??0).limit(req.body.limit??100)
+    .then((result) => {
+        // console.log(result)
+        curYear = Number(req.params.year)
+
+        index = 0
+        finalResponse = []
+
+        for(yr=curYear; yr>curYear-4; yr--){
+            result1 = result.filter(x => (Date.parse(x.created_at) < Date.parse(yr + '-05-31') && Date.parse(x.created_at) > Date.parse(yr-1 + '-06-01'))) ?? []
+            // console.log('Result = ' + result1);
+            // console.log('Result = ' + result1.length);
+            
+            curResponse = { 'year': yr }
+
+            if(result1.length == 0){
+                curResponse.total = 0;
+                curResponse.civil = 0; curResponse.ce = 0; curResponse.ec = 0; 
+                curResponse.it = 0; curResponse.mech = 0; curResponse.prod = 0;                
+            }
+            else{
+                curResponse.total = result1.length
+                curResponse.civil = (result1.filter(x => x.branchCivil ?? false) ?? []).length; 
+                curResponse.ce = (result1.filter(x => x.branchCE ?? false) ?? []).length; 
+                curResponse.ec = (result1.filter(x => x.branchEC ?? false) ?? []).length; 
+                curResponse.it = (result1.filter(x => x.branchIT ?? false) ?? []).length; 
+                curResponse.mech = (result1.filter(x => x.branchMech ?? false) ?? []).length; 
+                curResponse.prod = (result1.filter(x => x.branchProd ?? false) ?? []).length; 
+            }
+
+            finalResponse[index++] = curResponse
+        }
+
+        res.status(200).json({
+            response: finalResponse,
+            status: 200
+        })
+    })
+    .catch((err) => {
+        // console.log(err);
+        res.status(500).json({
+            error: err + '.',
+            status: 500
+        })
+    });
+});
+
+
 module.exports = router;
