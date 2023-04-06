@@ -451,7 +451,7 @@ router.get("/GetPlacementStatistics/:year",(req, res, next) => {
                 curResponse.total = 0;
                 curResponse.civil = 0; curResponse.ce = 0; curResponse.ec = 0; 
                 curResponse.it = 0; curResponse.mech = 0; curResponse.prod = 0;
-                
+                curResponse.ict = 0; curResponse.eie = 0;
             }
             else{
                 curResponse.total = result1.length
@@ -461,6 +461,8 @@ router.get("/GetPlacementStatistics/:year",(req, res, next) => {
                 curResponse.it = (result1.filter(x => x.branchcode==16) ?? []).length; 
                 curResponse.mech = (result1.filter(x => x.branchcode==19) ?? []).length; 
                 curResponse.prod = (result1.filter(x => x.branchcode==25) ?? []).length; 
+                curResponse.ict = (result1.filter(x => x.branchcode==32) ?? []).length; 
+                curResponse.eie = (result1.filter(x => x.branchcode==47) ?? []).length; 
             }
 
             finalResponse[index++] = curResponse

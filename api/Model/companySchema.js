@@ -24,6 +24,8 @@ const companySchema = new mongoose.Schema({
     branchCivil: Boolean,
     branchMech: Boolean,
     branchProd: Boolean,
+    branchICT: Boolean,
+    branchEIE: Boolean,
 });
 
 module.exports = mongoose.model('companySchema', companySchema, 'company_data');

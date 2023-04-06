@@ -213,7 +213,8 @@ router.get("/GetCompanyStatistics/:year",(req, res, next) => {
             if(result1.length == 0){
                 curResponse.total = 0;
                 curResponse.civil = 0; curResponse.ce = 0; curResponse.ec = 0; 
-                curResponse.it = 0; curResponse.mech = 0; curResponse.prod = 0;                
+                curResponse.it = 0; curResponse.mech = 0; curResponse.prod = 0;         
+                curResponse.ict = 0; curResponse.eie = 0;       
             }
             else{
                 curResponse.total = result1.length
@@ -223,6 +224,8 @@ router.get("/GetCompanyStatistics/:year",(req, res, next) => {
                 curResponse.it = (result1.filter(x => x.branchIT ?? false) ?? []).length; 
                 curResponse.mech = (result1.filter(x => x.branchMech ?? false) ?? []).length; 
                 curResponse.prod = (result1.filter(x => x.branchProd ?? false) ?? []).length; 
+                curResponse.ict = (result1.filter(x => x.branchICT ?? false) ?? []).length; 
+                curResponse.eie = (result1.filter(x => x.branchEIE ?? false) ?? []).length; 
             }
 
             finalResponse[index++] = curResponse
