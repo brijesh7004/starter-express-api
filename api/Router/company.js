@@ -75,6 +75,10 @@ router.post("/",(req, res, next) => {
             branchCivil: req.body.branchCivil,
             branchMech: req.body.branchMech,
             branchProd: req.body.branchProd,
+            branchICT: req.body.branchICT,
+            branchEIE: req.body.branchEIE,
+
+            isCampusActive: req.body.isCampusActive,
         });
     
         notifyItem.save()
@@ -128,6 +132,10 @@ router.put("/update/:id",(req, res, next) => {
                 branchCivil: req.body.branchCivil,
                 branchMech: req.body.branchMech,
                 branchProd: req.body.branchProd,
+                branchICT: req.body.branchICT,
+                branchEIE: req.body.branchEIE,
+
+                isCampusActive: req.body.isCampusActive,
             }
         })
         .then((result) => {
