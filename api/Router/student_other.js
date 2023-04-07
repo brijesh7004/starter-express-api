@@ -487,9 +487,9 @@ router.put("/clearMultiCompanyResponse/:cid",(req, res, next) => {
         })
     });
 });
-router.get("/findMultiCompanyResponse/:cid",(req, res, next) => {
+router.get("/findMultiCompanyResponse/:cid/:limit/:offset",(req, res, next) => {
     studentSchema2.find({iscampusinterest2: req.params.cid}).sort({enrollmentno:1})
-    .skip(req.body.offset??0).limit(req.body.limit??10)
+    .skip(req.params.offset??0).limit(req.params.limit??10)
     .then((result) => {
         console.log(result);
         res.status(200).json({
