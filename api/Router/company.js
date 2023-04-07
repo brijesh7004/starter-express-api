@@ -47,7 +47,6 @@ router.get("/:id",(req, res, next) => {
 });
 
 
-
 router.post("/",(req, res, next) => { 
     
     if((req.body.key ?? '000') == 'gec-placement-2023'){
@@ -248,6 +247,26 @@ router.get("/GetCompanyStatistics/:year",(req, res, next) => {
         // console.log(err);
         res.status(500).json({
             error: err + '.',
+            status: 500
+        })
+    });
+});
+
+
+router.get("/GetActiveCampus/:isActive",(req, res, next) => {
+    companySchema.find({isCampusActive: req.params.isActive==1}).sort({created_at:1})
+    // .skip(req.query.offset??0).limit(req.query.limit??100)
+    .then((result) => {
+        // console.log(result);
+        res.status(200).json({
+            response: result,
+            status: 200
+        })
+    })
+    .catch((err) => {
+        // console.log(err);
+        res.status(500).json({
+            error: err,
             status: 500
         })
     });

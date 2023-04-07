@@ -73,6 +73,8 @@ const studentSchema = new mongoose.Schema({
     placementYear: Number,
     created_at: String,
     modified_at: String,
+
+    iscampusinterest2: Array,
 });
 
 module.exports = mongoose.model('studentSchema', studentSchema, 'student_gec');

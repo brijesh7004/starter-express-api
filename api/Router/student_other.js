@@ -426,4 +426,85 @@ router.delete("/:id",(req, res, next) => {
 });
 
 
+router.put("/setMultiCompanyResponse/:sid/:cid/",(req, res, next) => {
+    studentSchema2.findById(req.params.sid)
+    .then((result) => {
+        // console.log(result);
+        // console.log(result.iscampusinterest2);
+
+        isCompanyExist = result.iscampusinterest2.filter(x => x==req.params.cid) ?? []
+        // console.log(isCompanyExist);
+
+        if(isCompanyExist.length == 0){
+            studentSchema2.updateMany(
+                {_id:req.params.sid},
+                { $push: {"iscampusinterest2":req.params.cid } }
+            )
+            .then((result) => {
+                // console.log(result);
+                res.status(200).json({
+                    response: result,
+                    status: 200
+                })
+            })
+            .catch((err) => {
+                // console.log(err);
+                res.status(500).json({
+                    error: err,
+                    status: 500
+                })
+            });
+        }
+        else{
+            res.status(200).json({
+                response: "Campus Already Applied",
+                status: 201
+            })
+        }
+    })
+    .catch((err) => {
+        // console.log(err);
+        res.status(500).json({
+            error: err,
+            status: 500
+        })
+    });
+});
+router.put("/clearMultiCompanyResponse/:cid",(req, res, next) => {
+    studentSchema2.updateMany({},{$pull:{"iscampusinterest2":req.params.cid }})
+    .then((result) => {
+        // console.log(result);
+        res.status(200).json({
+            response: result,
+            status: 200
+        })
+    })
+    .catch((err) => {
+        // console.log(err);
+        res.status(500).json({
+            error: err,
+            status: 500
+        })
+    });
+});
+router.get("/findMultiCompanyResponse/:cid",(req, res, next) => {
+    studentSchema2.find({iscampusinterest2: req.params.cid}).sort({enrollmentno:1})
+    .skip(req.body.offset??0).limit(req.body.limit??10)
+    .then((result) => {
+        console.log(result);
+        res.status(200).json({
+            response: result,
+            status: 200
+        })
+    })
+    .catch((err) => {
+        // console.log(err);
+        res.status(500).json({
+            error: err,
+            status: 500
+        })
+    });
+});
+
+
 module.exports = router;
