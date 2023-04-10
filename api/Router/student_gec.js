@@ -37,7 +37,7 @@ router.get("/",(req, res, next) => {
     
     if(req.body.isplacement != null){ filterJson.isplacement = req.body.isplacement; }
     if(req.body.iscampusinterest != null){ filterJson.iscampusinterest = req.body.iscampusinterest; }
-    if(req.body.isPlacedInFare != null){ filterJson.isPlacedInFare = req.body.isPlacedInFare; }
+    if(req.body.placementType != null){ filterJson.placementType = req.body.placementType; }
     if(req.body.placementYear != null){ filterJson.placementYear = req.body.placementYear; }
 
     // console.log(filterJson);
@@ -161,7 +161,7 @@ router.post("/FilterStudent",(req, res, next) => {
     
     if(req.body.isplacement != null){ filterJson.isplacement = req.body.isplacement; }
     if(req.body.iscampusinterest != null){ filterJson.iscampusinterest = req.body.iscampusinterest; }
-    if(req.body.isPlacedInFare != null){ filterJson.isPlacedInFare = req.body.isPlacedInFare; }
+    if(req.body.placementType != null){ filterJson.placementType = req.body.placementType; }
     if(req.body.placementYear != null){ filterJson.placementYear = req.body.placementYear; }
 
     studentSchema.find(filterJson).sort({enrollmentno:1})
@@ -239,7 +239,7 @@ router.post("/",(req, res, next) => {
 
         iscampusinterest: req.body.iscampusinterest,
         isplacement: req.body.isplacement,
-        isPlacedInFare: req.body.isPlacedInFare,
+        placementType: req.body.placementType,
         placementcompany: req.body.placementcompany,
         placementinfo: req.body.placementinfo,
         package: req.body.package,
@@ -325,7 +325,7 @@ router.put("/update/:id",(req, res, next) => {
     
             iscampusinterest: req.body.iscampusinterest,
             isplacement: req.body.isplacement,
-            isPlacedInFare: req.body.isPlacedInFare,
+            placementType: req.body.placementType,
             placementcompany: req.body.placementcompany,
             placementinfo: req.body.placementinfo,
             package: req.body.package,
@@ -470,6 +470,30 @@ router.get("/GetPlacementStatistics/:year",(req, res, next) => {
 
         res.status(200).json({
             response: finalResponse,
+            status: 200
+        })
+    })
+    .catch((err) => {
+        // console.log(err);
+        res.status(500).json({
+            error: err + ' -0',
+            status: 500
+        })
+    });
+});
+router.get("/GetPlacementList/:year",(req, res, next) => {
+    studentSchema.find({isplacement: true}).sort({enrollmentno:1})
+    //.skip(req.body.offset??0).limit(req.body.limit??100)
+    .then((result) => {
+        // console.log(result)
+        curYear = Number(req.params.year)
+        result1 = result.filter(x => (Date.parse(x.placementYear + '-' + x.placementMonth.toString().padStart(2,'0') + '-01') < Date.parse(curYear + '-05-31')
+                                    && Date.parse(x.placementYear + '-' + x.placementMonth.toString().padStart(2,'0') + '-01') > Date.parse(curYear-1 + '-06-01'))) ?? []
+        // console.log('Result = ' + result1);
+        // console.log('Result = ' + result1.length);
+
+        res.status(200).json({
+            response: result1,
             status: 200
         })
     })

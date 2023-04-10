@@ -64,7 +64,7 @@ const studentSchema2 = new mongoose.Schema({
     
     iscampusinterest: Boolean,
     isplacement: Boolean,
-    isPlacedInFare: Boolean,
+    placementType: String,
     placementcompany: String,
     placementinfo: String,
     package: Number,
