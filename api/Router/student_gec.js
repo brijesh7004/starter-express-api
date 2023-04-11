@@ -37,8 +37,9 @@ router.get("/",(req, res, next) => {
     
     if(req.body.isplacement != null){ filterJson.isplacement = req.body.isplacement; }
     if(req.body.iscampusinterest != null){ filterJson.iscampusinterest = req.body.iscampusinterest; }
-    if(req.body.placementType != null){ filterJson.placementType = req.body.placementType; }
-    if(req.body.placementYear != null){ filterJson.placementYear = req.body.placementYear; }
+    if(req.body.totalPlacement != null){ filterJson.totalPlacement = req.body.totalPlacement; }
+    // if(req.body.placementType != null){ filterJson.placementType = req.body.placementType; }
+    // if(req.body.placementYear != null){ filterJson.placementYear = req.body.placementYear; }
 
     // console.log(filterJson);
 
@@ -161,8 +162,9 @@ router.post("/FilterStudent",(req, res, next) => {
     
     if(req.body.isplacement != null){ filterJson.isplacement = req.body.isplacement; }
     if(req.body.iscampusinterest != null){ filterJson.iscampusinterest = req.body.iscampusinterest; }
-    if(req.body.placementType != null){ filterJson.placementType = req.body.placementType; }
-    if(req.body.placementYear != null){ filterJson.placementYear = req.body.placementYear; }
+    if(req.body.totalPlacement != null){ filterJson.totalPlacement = req.body.totalPlacement; }
+    // if(req.body.placementType != null){ filterJson.placementType = req.body.placementType; }
+    // if(req.body.placementYear != null){ filterJson.placementYear = req.body.placementYear; }
 
     studentSchema.find(filterJson).sort({enrollmentno:1})
     .skip(req.body.offset??0).limit(req.body.limit??100)
@@ -239,13 +241,13 @@ router.post("/",(req, res, next) => {
 
         iscampusinterest: req.body.iscampusinterest,
         isplacement: req.body.isplacement,
-        placementType: req.body.placementType,
-        placementcompany: req.body.placementcompany,
-        placementinfo: req.body.placementinfo,
-        package: req.body.package,
-        placementdate: req.body.placementdate,
-        placementMonth: req.body.placementMonth,
-        placementYear: req.body.placementYear,
+        // placementType: req.body.placementType,
+        // placementcompany: req.body.placementcompany,
+        // placementinfo: req.body.placementinfo,
+        // package: req.body.package,
+        // placementdate: req.body.placementdate,
+        // placementMonth: req.body.placementMonth,
+        // placementYear: req.body.placementYear,
 
         created_at: moment().format('YYYY-MM-DD hh:mm:ss'),
         modified_at: moment().format('YYYY-MM-DD hh:mm:ss'),
@@ -325,13 +327,13 @@ router.put("/update/:id",(req, res, next) => {
     
             iscampusinterest: req.body.iscampusinterest,
             isplacement: req.body.isplacement,
-            placementType: req.body.placementType,
-            placementcompany: req.body.placementcompany,
-            placementinfo: req.body.placementinfo,
-            package: req.body.package,
-            placementdate: req.body.placementdate,
-            placementMonth: req.body.placementMonth,
-            placementYear: req.body.placementYear,   
+            // placementType: req.body.placementType,
+            // placementcompany: req.body.placementcompany,
+            // placementinfo: req.body.placementinfo,
+            // package: req.body.package,
+            // placementdate: req.body.placementdate,
+            // placementMonth: req.body.placementMonth,
+            // placementYear: req.body.placementYear,   
 
             modified_at: moment().format('YYYY-MM-DD hh:mm:ss'),
         }
@@ -392,7 +394,7 @@ router.put("/clearCompanyResponse",(req, res, next) => {
 router.put("/clearid",(req, res, next) => {
     // console.log("Clear Item");
 
-    studentSchema.updateMany({},{$unset:{"id":1}})
+    studentSchema.updateMany({},{$unset:{"id":1,}})
     .then((result) => {
         // console.log(result);
         res.status(200).json({
@@ -440,29 +442,67 @@ router.get("/GetPlacementStatistics/:year",(req, res, next) => {
         finalResponse = []
 
         for(yr=curYear; yr>curYear-4; yr--){
-            result1 = result.filter(x => (Date.parse(x.placementYear + '-' + x.placementMonth.toString().padStart(2,'0') + '-01') < Date.parse(yr + '-05-31')
-                                    && Date.parse(x.placementYear + '-' + x.placementMonth.toString().padStart(2,'0') + '-01') > Date.parse(yr-1 + '-06-01'))) ?? []
+            result1 = result.filter(x => (Date.parse(x.totalPlacement[0].placementYear + '-' + x.totalPlacement[0].placementMonth.toString().padStart(2,'0') + '-01') < Date.parse(yr + '-05-31')
+                                    && Date.parse(x.totalPlacement[0].placementYear + '-' + x.totalPlacement[0].placementMonth.toString().padStart(2,'0') + '-01') > Date.parse(yr-1 + '-06-01'))) ?? []
             // console.log('Result = ' + result1);
             // console.log('Result = ' + result1.length);
-            
+
             curResponse = { 'year': yr }
 
             if(result1.length == 0){
-                curResponse.total = 0;
                 curResponse.civil = 0; curResponse.ce = 0; curResponse.ec = 0; 
                 curResponse.it = 0; curResponse.mech = 0; curResponse.prod = 0;
                 curResponse.ict = 0; curResponse.eie = 0;
+                curResponse.total = 0;
             }
             else{
-                curResponse.total = result1.length
-                curResponse.civil = (result1.filter(x => x.branchcode==6) ?? []).length; 
-                curResponse.ce = (result1.filter(x => x.branchcode==7) ?? []).length; 
-                curResponse.ec = (result1.filter(x => x.branchcode==11) ?? []).length; 
-                curResponse.it = (result1.filter(x => x.branchcode==16) ?? []).length; 
-                curResponse.mech = (result1.filter(x => x.branchcode==19) ?? []).length; 
-                curResponse.prod = (result1.filter(x => x.branchcode==25) ?? []).length; 
-                curResponse.ict = (result1.filter(x => x.branchcode==32) ?? []).length; 
-                curResponse.eie = (result1.filter(x => x.branchcode==47) ?? []).length; 
+                curResponse.civil = 0; curResponse.ce = 0; curResponse.ec = 0; 
+                curResponse.it = 0; curResponse.mech = 0; curResponse.prod = 0;
+                curResponse.ict = 0; curResponse.eie = 0;
+
+                (result1.filter(x => x.branchcode==6) ?? []).forEach(element => {
+                    curResponse.civil = curResponse.civil + element.totalPlacement.length;
+                });
+
+                (result1.filter(x => x.branchcode==7) ?? []).forEach(element => {
+                    curResponse.ce = curResponse.ce + element.totalPlacement.length;
+                });
+
+                (result1.filter(x => x.branchcode==11) ?? []).forEach(element => {
+                    curResponse.ec = curResponse.ec + element.totalPlacement.length;
+                });
+
+                (result1.filter(x => x.branchcode==16) ?? []).forEach(element => {
+                    curResponse.it = curResponse.it + element.totalPlacement.length;
+                });
+
+                (result1.filter(x => x.branchcode==19) ?? []).forEach(element => {
+                    curResponse.mech = curResponse.mech + element.totalPlacement.length;
+                });
+
+                (result1.filter(x => x.branchcode==25) ?? []).forEach(element => {
+                    curResponse.prod = curResponse.prod + element.totalPlacement.length;
+                });
+
+                (result1.filter(x => x.branchcode==32) ?? []).forEach(element => {
+                    curResponse.ict = curResponse.ict + element.totalPlacement.length;
+                });
+
+                (result1.filter(x => x.branchcode==47) ?? []).forEach(element => {
+                    curResponse.eie = curResponse.eie + element.totalPlacement.length;
+                });
+
+                // curResponse.civil = (result1.filter(x => x.branchcode==6) ?? []).length; 
+                // curResponse.ce = (result1.filter(x => x.branchcode==7) ?? []).length; 
+                // curResponse.ec = (result1.filter(x => x.branchcode==11) ?? []).length; 
+                // curResponse.it = (result1.filter(x => x.branchcode==16) ?? []).length; 
+                // curResponse.mech = (result1.filter(x => x.branchcode==19) ?? []).length; 
+                // curResponse.prod = (result1.filter(x => x.branchcode==25) ?? []).length; 
+                // curResponse.ict = (result1.filter(x => x.branchcode==32) ?? []).length; 
+                // curResponse.eie = (result1.filter(x => x.branchcode==47) ?? []).length; 
+
+                curResponse.total = curResponse.civil + curResponse.ce + curResponse.ec + curResponse.it
+                                + curResponse.mech + curResponse.prod + curResponse.ict + curResponse.eie;
             }
 
             finalResponse[index++] = curResponse
@@ -487,10 +527,30 @@ router.get("/GetPlacementList/:year",(req, res, next) => {
     .then((result) => {
         // console.log(result)
         curYear = Number(req.params.year)
-        result1 = result.filter(x => (Date.parse(x.placementYear + '-' + x.placementMonth.toString().padStart(2,'0') + '-01') < Date.parse(curYear + '-05-31')
-                                    && Date.parse(x.placementYear + '-' + x.placementMonth.toString().padStart(2,'0') + '-01') > Date.parse(curYear-1 + '-06-01'))) ?? []
+        result1 = result.filter(x => (Date.parse(x.totalPlacement[0].placementYear + '-' + x.totalPlacement[0].placementMonth.toString().padStart(2,'0') + '-01') < Date.parse(curYear + '-05-31')
+                                    && Date.parse(x.totalPlacement[0].placementYear + '-' + x.totalPlacement[0].placementMonth.toString().padStart(2,'0') + '-01') > Date.parse(curYear-1 + '-06-01'))) ?? []
         // console.log('Result = ' + result1);
         // console.log('Result = ' + result1.length);
+
+        // finalResult = []; itemCount=0;
+        // result1.forEach(element =>{  
+        //     if(element.totalPlacement.length>1){
+        //         startCount = itemCount;
+        //         for(idx=0; idx<element.totalPlacement.length; idx++){
+        //             finalResult[itemCount++] = element;
+        //         }    
+                
+        //         count2 = 0;
+        //         for(idx=0; idx<element.totalPlacement.length; idx++){
+        //             finalResult[startCount].totalPlacement = finalResult[startCount].totalPlacement[count2];
+        //             startCount++; count2++;
+        //         }    
+        //     }
+        //     else{
+        //         element.totalPlacement = element.totalPlacement[0];
+        //         finalResult[itemCount++] = element;
+        //     }
+        // })
 
         res.status(200).json({
             response: result1,

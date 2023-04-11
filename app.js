@@ -10,6 +10,7 @@ const compRouter = require('./api/Router/company');
 const studentRouter = require('./api/Router/student_gec');
 const studentRouter2 = require('./api/Router/student_other');
 const studentAdmitRouter = require('./api/Router/student_admission');
+const campusRouter = require('./api/Router/campus');
 const bodyparser = require('body-parser');
 
 mongoose.connect("mongodb+srv://kanudo3101:ManP0ddUNiCRK1X2@mongodbpractice.g1mvyof.mongodb.net/placement_data");
@@ -24,6 +25,7 @@ app.use('/company', compRouter);
 app.use('/studentGec', studentRouter);
 app.use('/studentOther', studentRouter2);
 app.use('/studentAdmit', studentAdmitRouter);
+app.use('/campus', campusRouter);
 
 // app.use((req, res, next) => {
 //     res.status(200).json({

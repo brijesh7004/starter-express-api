@@ -63,18 +63,12 @@ const studentSchema = new mongoose.Schema({
     sem8cgpa: Number,
     
     iscampusinterest: Boolean,
+    iscampusinterest2: Array,
     isplacement: Boolean,
-    placementType: String,
-    placementcompany: String,
-    placementinfo: String,
-    package: Number,
-    placementdate: String,
-    placementMonth: Number,
-    placementYear: Number,
+    totalPlacement: Array,
     created_at: String,
     modified_at: String,
 
-    iscampusinterest2: Array,
 });
 
 module.exports = mongoose.model('studentSchema', studentSchema, 'student_gec');

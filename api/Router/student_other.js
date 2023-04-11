@@ -37,8 +37,8 @@ router.get("/",(req, res, next) => {
     
     if(req.body.isplacement != null){ filterJson.isplacement = req.body.isplacement; }
     if(req.body.iscampusinterest != null){ filterJson.iscampusinterest = req.body.iscampusinterest; }
-    if(req.body.placementType != null){ filterJson.placementType = req.body.placementType; }
-    if(req.body.placementYear != null){ filterJson.placementYear = req.body.placementYear; }
+    // if(req.body.placementType != null){ filterJson.placementType = req.body.placementType; }
+    // if(req.body.placementYear != null){ filterJson.placementYear = req.body.placementYear; }
 
     // console.log(filterJson);
 
@@ -158,8 +158,8 @@ router.post("/FilterStudent",(req, res, next) => {
     
     if(req.body.isplacement != null){ filterJson.isplacement = req.body.isplacement; }
     if(req.body.iscampusinterest != null){ filterJson.iscampusinterest = req.body.iscampusinterest; }
-    if(req.body.placementType != null){ filterJson.placementType = req.body.placementType; }
-    if(req.body.placementYear != null){ filterJson.placementYear = req.body.placementYear; }
+    // if(req.body.placementType != null){ filterJson.placementType = req.body.placementType; }
+    // if(req.body.placementYear != null){ filterJson.placementYear = req.body.placementYear; }
 
     studentSchema2.find(filterJson).sort({enrollmentno:1})
     .skip(req.body.offset??0).limit(req.body.limit??100)
@@ -236,13 +236,13 @@ router.post("/",(req, res, next) => {
 
         iscampusinterest: req.body.iscampusinterest,
         isplacement: req.body.isplacement,
-        placementType: req.body.placementType,
-        placementcompany: req.body.placementcompany,
-        placementinfo: req.body.placementinfo,
-        package: req.body.package,
-        placementdate: req.body.placementdate,
-        placementMonth: req.body.placementMonth,
-        placementYear: req.body.placementYear,
+        // placementType: req.body.placementType,
+        // placementcompany: req.body.placementcompany,
+        // placementinfo: req.body.placementinfo,
+        // package: req.body.package,
+        // placementdate: req.body.placementdate,
+        // placementMonth: req.body.placementMonth,
+        // placementYear: req.body.placementYear,
 
         created_at: moment().format('YYYY-MM-DD hh:mm:ss'),
         modified_at: moment().format('YYYY-MM-DD hh:mm:ss'),
@@ -322,13 +322,13 @@ router.put("/update/:id",(req, res, next) => {
     
             iscampusinterest: req.body.iscampusinterest,
             isplacement: req.body.isplacement,
-            placementType: req.body.placementType,
-            placementcompany: req.body.placementcompany,
-            placementinfo: req.body.placementinfo,
-            package: req.body.package,
-            placementdate: req.body.placementdate,
-            placementMonth: req.body.placementMonth,
-            placementYear: req.body.placementYear,   
+            // placementType: req.body.placementType,
+            // placementcompany: req.body.placementcompany,
+            // placementinfo: req.body.placementinfo,
+            // package: req.body.package,
+            // placementdate: req.body.placementdate,
+            // placementMonth: req.body.placementMonth,
+            // placementYear: req.body.placementYear,   
 
             modified_at: moment().format('YYYY-MM-DD hh:mm:ss'),
         }
