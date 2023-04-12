@@ -433,77 +433,43 @@ router.delete("/:id",(req, res, next) => {
 
 router.get("/GetPlacementStatistics/:year",(req, res, next) => {
     studentSchema.find({isplacement: true}).sort({enrollmentno:1})
-    //.skip(req.body.offset??0).limit(req.body.limit??100)
     .then((result) => {
         // console.log(result)
         curYear = Number(req.params.year)
 
-        index = 0
-        finalResponse = []
-
+        finalResponse = []; index = 0;
         for(yr=curYear; yr>curYear-4; yr--){
-            result1 = result.filter(x => (Date.parse(x.totalPlacement[0].placementYear + '-' + x.totalPlacement[0].placementMonth.toString().padStart(2,'0') + '-01') < Date.parse(yr + '-05-31')
-                                    && Date.parse(x.totalPlacement[0].placementYear + '-' + x.totalPlacement[0].placementMonth.toString().padStart(2,'0') + '-01') > Date.parse(yr-1 + '-06-01'))) ?? []
-            // console.log('Result = ' + result1);
-            // console.log('Result = ' + result1.length);
+            numEC=0; numIT=0; numCE=0; numCivil=0; numMech=0; numProd=0; numICT=0; numEIE=0;
+            
+            for(cmps=1; cmps<=10; cmps++){
+                result1 = result.filter(x => x.totalPlacement.length==cmps) ?? [];
+
+                if(result1.length>0){
+                    result1.forEach(student => {
+                        for(cmps2=0; cmps2<cmps; cmps2++){
+                            isSuccess = (Date.parse(student.totalPlacement[cmps2].placementYear + '-' + student.totalPlacement[cmps2].placementMonth.toString().padStart(2,'0') + '-01') < Date.parse(yr + '-05-31')
+                                            && Date.parse(student.totalPlacement[cmps2].placementYear + '-' + student.totalPlacement[cmps2].placementMonth.toString().padStart(2,'0') + '-01') > Date.parse(yr-1 + '-06-01'));
+                            
+                            if(isSuccess){
+                                if(student.branchcode==6){ numCivil++; }
+                                if(student.branchcode==7){ numCE++; }
+                                if(student.branchcode==11){ numEC++; }
+                                if(student.branchcode==16){ numIT++; }
+                                if(student.branchcode==19){ numMech++; }
+                                if(student.branchcode==25){ numProd++; }
+                                if(student.branchcode==32){ numICT++; }
+                                if(student.branchcode==47){ numEIE++; }
+                            }
+                        }
+                    });
+                }
+            }
 
             curResponse = { 'year': yr }
-
-            if(result1.length == 0){
-                curResponse.civil = 0; curResponse.ce = 0; curResponse.ec = 0; 
-                curResponse.it = 0; curResponse.mech = 0; curResponse.prod = 0;
-                curResponse.ict = 0; curResponse.eie = 0;
-                curResponse.total = 0;
-            }
-            else{
-                curResponse.civil = 0; curResponse.ce = 0; curResponse.ec = 0; 
-                curResponse.it = 0; curResponse.mech = 0; curResponse.prod = 0;
-                curResponse.ict = 0; curResponse.eie = 0;
-
-                (result1.filter(x => x.branchcode==6) ?? []).forEach(element => {
-                    curResponse.civil = curResponse.civil + element.totalPlacement.length;
-                });
-
-                (result1.filter(x => x.branchcode==7) ?? []).forEach(element => {
-                    curResponse.ce = curResponse.ce + element.totalPlacement.length;
-                });
-
-                (result1.filter(x => x.branchcode==11) ?? []).forEach(element => {
-                    curResponse.ec = curResponse.ec + element.totalPlacement.length;
-                });
-
-                (result1.filter(x => x.branchcode==16) ?? []).forEach(element => {
-                    curResponse.it = curResponse.it + element.totalPlacement.length;
-                });
-
-                (result1.filter(x => x.branchcode==19) ?? []).forEach(element => {
-                    curResponse.mech = curResponse.mech + element.totalPlacement.length;
-                });
-
-                (result1.filter(x => x.branchcode==25) ?? []).forEach(element => {
-                    curResponse.prod = curResponse.prod + element.totalPlacement.length;
-                });
-
-                (result1.filter(x => x.branchcode==32) ?? []).forEach(element => {
-                    curResponse.ict = curResponse.ict + element.totalPlacement.length;
-                });
-
-                (result1.filter(x => x.branchcode==47) ?? []).forEach(element => {
-                    curResponse.eie = curResponse.eie + element.totalPlacement.length;
-                });
-
-                // curResponse.civil = (result1.filter(x => x.branchcode==6) ?? []).length; 
-                // curResponse.ce = (result1.filter(x => x.branchcode==7) ?? []).length; 
-                // curResponse.ec = (result1.filter(x => x.branchcode==11) ?? []).length; 
-                // curResponse.it = (result1.filter(x => x.branchcode==16) ?? []).length; 
-                // curResponse.mech = (result1.filter(x => x.branchcode==19) ?? []).length; 
-                // curResponse.prod = (result1.filter(x => x.branchcode==25) ?? []).length; 
-                // curResponse.ict = (result1.filter(x => x.branchcode==32) ?? []).length; 
-                // curResponse.eie = (result1.filter(x => x.branchcode==47) ?? []).length; 
-
-                curResponse.total = curResponse.civil + curResponse.ce + curResponse.ec + curResponse.it
-                                + curResponse.mech + curResponse.prod + curResponse.ict + curResponse.eie;
-            }
+            curResponse.civil = numCivil; curResponse.ce = numCE; curResponse.ec = numEC; 
+            curResponse.it = numIT; curResponse.mech = numMech; curResponse.prod = numProd;
+            curResponse.ict = numICT; curResponse.eie = numEIE;
+            curResponse.total = numCivil + numCE + numEC + numIT + numMech + numProd + numICT + numEIE;
 
             finalResponse[index++] = curResponse
         }
@@ -523,37 +489,28 @@ router.get("/GetPlacementStatistics/:year",(req, res, next) => {
 });
 router.get("/GetPlacementList/:year",(req, res, next) => {
     studentSchema.find({isplacement: true}).sort({enrollmentno:1})
-    //.skip(req.body.offset??0).limit(req.body.limit??100)
     .then((result) => {
         // console.log(result)
         curYear = Number(req.params.year)
-        result1 = result.filter(x => (Date.parse(x.totalPlacement[0].placementYear + '-' + x.totalPlacement[0].placementMonth.toString().padStart(2,'0') + '-01') < Date.parse(curYear + '-05-31')
-                                    && Date.parse(x.totalPlacement[0].placementYear + '-' + x.totalPlacement[0].placementMonth.toString().padStart(2,'0') + '-01') > Date.parse(curYear-1 + '-06-01'))) ?? []
-        // console.log('Result = ' + result1);
-        // console.log('Result = ' + result1.length);
+        
+        finalResponse = []; index = 0;
+        for(cmps=1; cmps<=10; cmps++){
+            result1 = result.filter(x => x.totalPlacement.length==cmps) ?? [];
 
-        // finalResult = []; itemCount=0;
-        // result1.forEach(element =>{  
-        //     if(element.totalPlacement.length>1){
-        //         startCount = itemCount;
-        //         for(idx=0; idx<element.totalPlacement.length; idx++){
-        //             finalResult[itemCount++] = element;
-        //         }    
-                
-        //         count2 = 0;
-        //         for(idx=0; idx<element.totalPlacement.length; idx++){
-        //             finalResult[startCount].totalPlacement = finalResult[startCount].totalPlacement[count2];
-        //             startCount++; count2++;
-        //         }    
-        //     }
-        //     else{
-        //         element.totalPlacement = element.totalPlacement[0];
-        //         finalResult[itemCount++] = element;
-        //     }
-        // })
+            if(result1.length>0){
+                result1.forEach(student => {
+                    isSuccess = false;
+                    for(cmps2=0; cmps2<cmps; cmps2++){
+                        isSuccess |= (Date.parse(student.totalPlacement[cmps2].placementYear + '-' + student.totalPlacement[cmps2].placementMonth.toString().padStart(2,'0') + '-01') < Date.parse(curYear + '-05-31')
+                                        && Date.parse(student.totalPlacement[cmps2].placementYear + '-' + student.totalPlacement[cmps2].placementMonth.toString().padStart(2,'0') + '-01') > Date.parse(curYear-1 + '-06-01'));
+                    }
+                    if(isSuccess){  finalResponse[index++] = student }
+                });
+            }
+        }
 
         res.status(200).json({
-            response: result1,
+            response: finalResponse,
             status: 200
         })
     })

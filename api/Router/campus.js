@@ -315,9 +315,7 @@ router.get("/GetPlacementStatistics/:year",(req, res, next) => {
     filterJson.placementYear = { $gte: Number(req.params.year)-3};
 
     campusSchema.find(filterJson).sort({enrollmentno:1})
-    //.skip(req.body.offset??0).limit(req.body.limit??100)
     .then((result) => {
-        // console.log(result)
         curYear = Number(req.params.year)
 
         index = 0
@@ -332,13 +330,12 @@ router.get("/GetPlacementStatistics/:year",(req, res, next) => {
             curResponse = { 'year': yr }
 
             if(result1.length == 0){
-                curResponse.total = 0;
                 curResponse.civil = 0; curResponse.ce = 0; curResponse.ec = 0; 
                 curResponse.it = 0; curResponse.mech = 0; curResponse.prod = 0;
                 curResponse.ict = 0; curResponse.eie = 0;
+                curResponse.total = 0;
             }
             else{
-                curResponse.total = result1.length
                 curResponse.civil = (result1.filter(x => x.branchcode==6) ?? []).length; 
                 curResponse.ce = (result1.filter(x => x.branchcode==7) ?? []).length; 
                 curResponse.ec = (result1.filter(x => x.branchcode==11) ?? []).length; 
@@ -347,6 +344,7 @@ router.get("/GetPlacementStatistics/:year",(req, res, next) => {
                 curResponse.prod = (result1.filter(x => x.branchcode==25) ?? []).length; 
                 curResponse.ict = (result1.filter(x => x.branchcode==32) ?? []).length; 
                 curResponse.eie = (result1.filter(x => x.branchcode==47) ?? []).length; 
+                curResponse.total = result1.length
             }
 
             finalResponse[index++] = curResponse
