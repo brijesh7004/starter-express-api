@@ -475,7 +475,7 @@ router.get("/GetPlacementStatistics/:year",(req, res, next) => {
         }
 
         res.status(200).json({
-            response: finalResponse.sort({enrollmentno:1}),
+            response: finalResponse,
             status: 200
         })
     })
@@ -510,7 +510,7 @@ router.get("/GetPlacementList/:year",(req, res, next) => {
         }
 
         res.status(200).json({
-            response: finalResponse.sort({enrollmentno:1}),
+            response: finalResponse,
             status: 200
         })
     })
