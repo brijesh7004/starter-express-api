@@ -24,7 +24,7 @@ router.get("/",(req, res, next) => {
 
     // campusSchema.find({id:{$exists:true}}).sort({created_at:-1})
     campusSchema.find(filterJson).sort({enrollmentno:1})
-    .skip(req.body.offset??0).limit(req.body.limit??100)
+    .skip(req.query.offset??0).limit(req.query.limit??100)
     .then((result) => {
         // console.log(result);
         res.status(200).json({
@@ -40,7 +40,7 @@ router.get("/",(req, res, next) => {
         })
     });
 });
-router.post("/FilterStudent",(req, res, next) => {  
+router.post("/FilterCampus",(req, res, next) => {  
     filterJson = {}
     if(req.body.cname != null){ filterJson = { $text: { $search: req.body.cname } }; }
     
@@ -287,15 +287,63 @@ router.put("/update/:id",(req, res, next) => {
     });
 });
 
-router.delete("/:id",(req, res, next) => {
+router.delete("/:id/:enrollment",(req, res, next) => {
     campusSchema.findByIdAndRemove({_id: req.params.id})
     .then((result) => {
-        // console.log(result);
-        res.status(200).json({
-            msg: "Item Deleted",
-            response: result,
-            status: 200
+        campusSchema.find({ enrollmentno: req.params.enrollment })
+        .then((result2) => { 
+            totalCampus = result2 
+
+            studentSchema.find({enrollmentno: req.params.enrollment})
+            .then((result) => {
+                   mongoId = result.length==1?result[0]._id:0; 
+
+                   if(mongoId != 0){
+                        studentSchema.findOneAndUpdate({_id:mongoId,},{
+                            $set:{
+                                isplacement: true,
+                                totalPlacement: totalCampus,
+                                modified_at: moment().format('YYYY-MM-DD hh:mm:ss'),
+                            }
+                        })
+                        .then((result) => {
+                            // console.log(result);
+                            res.status(200).json({
+                                msg: "Item Deleted",
+                                response: totalCampus,
+                                status: 200
+                            })                           
+                        })
+                        .catch((err) => {
+                            // console.log(err);
+                            res.status(500).json({
+                                error: err,
+                                status: 500
+                            })
+                        });    
+                    }
+                    else{
+                        res.status(500).json({
+                            error: "Failed to Delete Campus",
+                            status: 500
+                        })
+                    }
+                })
+            .catch((err) => {
+                // console.log(err);
+                res.status(500).json({
+                    error: err,
+                    status: 500
+                })
+            });        
         })
+        .catch((err) => {
+            // console.log(err);
+            res.status(500).json({
+                error: err,
+                status: 500
+            })
+        });
     })
     .catch((err) => {
         // console.log(err);
@@ -305,8 +353,6 @@ router.delete("/:id",(req, res, next) => {
         })
     });
 });
-
-
 
 
 router.get("/GetPlacementStatistics/:year",(req, res, next) => {

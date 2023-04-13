@@ -475,14 +475,14 @@ router.get("/GetPlacementStatistics/:year",(req, res, next) => {
         }
 
         res.status(200).json({
-            response: finalResponse,
+            response: finalResponse.sort({enrollmentno:1}),
             status: 200
         })
     })
     .catch((err) => {
         // console.log(err);
         res.status(500).json({
-            error: err + ' -0',
+            error: err + '.',
             status: 500
         })
     });
@@ -510,14 +510,14 @@ router.get("/GetPlacementList/:year",(req, res, next) => {
         }
 
         res.status(200).json({
-            response: finalResponse,
+            response: finalResponse.sort({enrollmentno:1}),
             status: 200
         })
     })
     .catch((err) => {
         // console.log(err);
         res.status(500).json({
-            error: err + ' -0',
+            error: err + '.',
             status: 500
         })
     });
