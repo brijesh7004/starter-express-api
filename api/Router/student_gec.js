@@ -241,13 +241,6 @@ router.post("/",(req, res, next) => {
 
         iscampusinterest: req.body.iscampusinterest,
         isplacement: req.body.isplacement,
-        // placementType: req.body.placementType,
-        // placementcompany: req.body.placementcompany,
-        // placementinfo: req.body.placementinfo,
-        // package: req.body.package,
-        // placementdate: req.body.placementdate,
-        // placementMonth: req.body.placementMonth,
-        // placementYear: req.body.placementYear,
 
         created_at: moment().format('YYYY-MM-DD hh:mm:ss'),
         modified_at: moment().format('YYYY-MM-DD hh:mm:ss'),
@@ -268,6 +261,112 @@ router.post("/",(req, res, next) => {
             status: 500 
         })
     });
+});
+router.post("/insertBulk",(req, res, next) => {  
+    newList = [];  idx=0;       totalLen = req.body.length; curLen = 0;
+    req.body.map(function(p){
+        studentSchema.find({enrollmentno: p.enrollmentno})
+        .then((result) =>{
+            curLen++;
+            // console.log(result);
+            if(result.length==0){
+                newList[idx++] = p;
+            }
+
+            if(curLen==totalLen){
+                if(newList.length > 0){
+                    studentSchema.bulkWrite(newList.map(function(p) { 
+                        return {             
+                            insertOne :{
+                                document: new studentSchema({
+                                    _id: new mongoose.Types.ObjectId,
+                                
+                                    enrollmentno: p.enrollmentno,
+                                    name: p.name,
+                                    accesstoken: p.accesstoken,
+                                    branch: p.branch,
+                                    branchcode: p.branchcode,
+                                    academicyear: p.academicyear,
+                                    email: p.email,
+                                    mobile: p.mobile,
+                                    birthdate: p.birthdate,
+                                    gender: p.gender,
+                                    category: p.category,
+                                    
+                                    grade10: p.grade10,
+                                    grade12: p.grade12,
+                                    isdiploma: p.isdiploma,
+                                    graded2d: p.graded2d,
+                                    totalbacklog: p.totalbacklog,
+                                    finalcpi: p.finalcpi,
+                                    finalcgpa: p.finalcgpa,
+                                    
+                                    sem1backlog: p.sem1backlog,
+                                    sem1cpi: p.sem1cpi,
+                                    sem1spi: p.sem1spi,
+                                    sem2backlog: p.sem2backlog,
+                                    sem2cpi: p.sem2cpi,
+                                    sem2spi: p.sem2spi,
+                                    sem3backlog: p.sem3backlog,
+                                    sem3cpi: p.sem3cpi,
+                                    sem3spi: p.sem3spi,
+                                    sem4backlog: p.sem4backlog,
+                                    sem4cpi: p.sem4cpi,
+                                    sem4spi: p.sem4spi,
+                            
+                                    sem5backlog: p.sem5backlog,
+                                    sem5cpi: p.sem5cpi,
+                                    sem5spi: p.sem5spi,
+                                    sem5cgpa: p.sem5cgpa,
+                                    sem6backlog: p.sem6backlog,
+                                    sem6cpi: p.sem6cpi,
+                                    sem6spi: p.sem6spi,
+                                    sem6cgpa: p.sem6cgpa,
+                                    sem7backlog: p.sem7backlog,
+                                    sem7cpi: p.sem7cpi,
+                                    sem7spi: p.sem7spi,
+                                    sem7cgpa: p.sem7cgpa,
+                                    sem8backlog: p.sem8backlog,
+                                    sem8cpi: p.sem8cpi,
+                                    sem8spi: p.sem8spi,
+                                    sem8cgpa: p.sem8cgpa,
+                            
+                                    // iscampusinterest: p.iscampusinterest,
+                                    // isplacement: p.isplacement,
+                            
+                                    created_at: moment().format('YYYY-MM-DD hh:mm:ss'),
+                                    modified_at: moment().format('YYYY-MM-DD hh:mm:ss'),
+                                })
+                            }
+                        }
+                    }))
+                    .then((result) => {
+                        // console.log(result);
+                        res.status(200).json({
+                            response: result,
+                            status: 200
+                        })
+                    })
+                    .catch((err) => {
+                        // console.log(err);
+                        res.status(500).json({
+                            error: err,
+                            status: 500
+                        })
+                    });
+                }
+                else{
+                    res.status(200).json({
+                        response: [],
+                        status: 200
+                    })
+                }
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    })
 });
 
 
@@ -353,6 +452,87 @@ router.put("/update/:id",(req, res, next) => {
         })
     });
 });
+router.put("/updateBulk",(req, res, next) => {
+    // console.log(req.body['data']);
+    const list = JSON.parse(req.body['data'])
+    studentSchema.bulkWrite(list.map(function(p) { 
+        return { 
+            updateOne:{filter: {_id: p.id},
+                update: {
+                    $set:{
+                        name: p.name,
+                        accesstoken: p.accesstoken,
+                        // branch: p.branch,
+                        // branchcode: p.branchcode,
+                        // academicyear: p.academicyear,
+                        // isdiploma: p.isdiploma,
+                        email: p.email,
+                        mobile: p.mobile,
+                        birthdate: p.birthdate,
+                        gender: p.gender,
+                        category: p.category,
+                        
+                        grade10: p.grade10,
+                        grade12: p.grade12,
+                        graded2d: p.graded2d,
+                        totalbacklog: p.totalbacklog,
+                        finalcpi: p.finalcpi,
+                        finalcgpa: p.finalcgpa,
+                        
+                        sem1backlog: p.sem1backlog,
+                        sem1cpi: p.sem1cpi,
+                        sem1spi: p.sem1spi,
+                        sem2backlog: p.sem2backlog,
+                        sem2cpi: p.sem2cpi,
+                        sem2spi: p.sem2spi,
+                        sem3backlog: p.sem3backlog,
+                        sem3cpi: p.sem3cpi,
+                        sem3spi: p.sem3spi,
+                        sem4backlog: p.sem4backlog,
+                        sem4cpi: p.sem4cpi,
+                        sem4spi: p.sem4spi,
+                
+                        sem5backlog: p.sem5backlog,
+                        sem5cpi: p.sem5cpi,
+                        sem5spi: p.sem5spi,
+                        sem5cgpa: p.sem5cgpa,
+                        sem6backlog: p.sem6backlog,
+                        sem6cpi: p.sem6cpi,
+                        sem6spi: p.sem6spi,
+                        sem6cgpa: p.sem6cgpa,
+                        sem7backlog: p.sem7backlog,
+                        sem7cpi: p.sem7cpi,
+                        sem7spi: p.sem7spi,
+                        sem7cgpa: p.sem7cgpa,
+                        sem8backlog: p.sem8backlog,
+                        sem8cpi: p.sem8cpi,
+                        sem8spi: p.sem8spi,
+                        sem8cgpa: p.sem8cgpa,
+                
+                        iscampusinterest: p.iscampusinterest,
+                        isplacement: p.isplacement,
+            
+                        modified_at: moment().format('YYYY-MM-DD hh:mm:ss'),
+                    }
+                }
+        }}
+    }))
+    .then((result) => {
+        // console.log(result);
+        res.status(200).json({
+            response: result,
+            status: 200
+        })
+    })
+    .catch((err) => {
+        // console.log(err);
+        res.status(500).json({
+            error: err,
+            status: 500
+        })
+    });
+});
+
 router.put("/setCompanyResponse/:id",(req, res, next) => {
     // console.log("Clear Item");
 
