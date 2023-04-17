@@ -264,7 +264,10 @@ router.post("/",(req, res, next) => {
 });
 router.post("/insertBulk",(req, res, next) => {  
     newList = [];  idx=0;       totalLen = req.body.length; curLen = 0;
-    req.body.map(function(p){
+
+    // console.log(req.body['data']);
+    const list = JSON.parse(req.body['data'])
+    list.map(function(p){
         studentSchema.find({enrollmentno: p.enrollmentno})
         .then((result) =>{
             curLen++;
