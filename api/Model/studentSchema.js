@@ -69,6 +69,7 @@ const studentSchema = new mongoose.Schema({
     created_at: String,
     modified_at: String,
 
+    prefTech: String,
 });
 
 module.exports = mongoose.model('studentSchema', studentSchema, 'student_gec');

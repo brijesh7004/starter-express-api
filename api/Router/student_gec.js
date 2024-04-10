@@ -41,6 +41,8 @@ router.get("/",(req, res, next) => {
     // if(req.body.placementType != null){ filterJson.placementType = req.body.placementType; }
     // if(req.body.placementYear != null){ filterJson.placementYear = req.body.placementYear; }
 
+    if(req.body.prefTech != null){ filterJson.prefTech = req.body.prefTech; }
+
     // console.log(filterJson);
 
     // studentSchema.find({id:{$exists:true}}).sort({created_at:-1})
@@ -166,6 +168,8 @@ router.post("/FilterStudent",(req, res, next) => {
     // if(req.body.placementType != null){ filterJson.placementType = req.body.placementType; }
     // if(req.body.placementYear != null){ filterJson.placementYear = req.body.placementYear; }
 
+    if(req.body.prefTech != null){ filterJson.prefTech = req.body.prefTech; }
+
     studentSchema.find(filterJson).sort({enrollmentno:1})
     .skip(req.body.offset??0).limit(req.body.limit??100)
     .then((result) => {
@@ -242,6 +246,8 @@ router.post("/",(req, res, next) => {
         iscampusinterest: req.body.iscampusinterest,
         isplacement: req.body.isplacement,
 
+        prefTech: req.body.prefTech,
+
         created_at: moment().format('YYYY-MM-DD hh:mm:ss'),
         modified_at: moment().format('YYYY-MM-DD hh:mm:ss'),
     });    
@@ -296,6 +302,7 @@ router.post("/insertBulk",(req, res, next) => {
                                     birthdate: p.birthdate,
                                     gender: p.gender,
                                     category: p.category,
+                                    prefTech: p.prefTech,
                                     
                                     grade10: p.grade10,
                                     grade12: p.grade12,
@@ -436,7 +443,9 @@ router.put("/update/:id",(req, res, next) => {
             // package: req.body.package,
             // placementdate: req.body.placementdate,
             // placementMonth: req.body.placementMonth,
-            // placementYear: req.body.placementYear,   
+            // placementYear: req.body.placementYear, 
+            
+            prefTech: req.body.prefTech,
 
             modified_at: moment().format('YYYY-MM-DD hh:mm:ss'),
         }
@@ -475,6 +484,7 @@ router.put("/updateBulk",(req, res, next) => {
                         birthdate: p.birthdate,
                         gender: p.gender,
                         category: p.category,
+                        prefTech: p.prefTech,
                         
                         grade10: p.grade10,
                         grade12: p.grade12,
